@@ -1,53 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerMove : MonoBehaviour
 {
     //Movement
-    public float speed = 5.0f;
-    Vector3 velocity;
+    public float moveSpeed;
+
+    //Ground Check
+    public float groundDrag;
+
+    public float playerHeight;
+    public LayerMask whatIsGround;
+    bool grounded;
+
+    public Transform orientation;
+
+    float horizontalInput;
+    float verticalInput;
+
     Vector3 moveDirection;
-    CharacterController controller;
 
-    //Gravity
-    public float jumpHeight = 1.0f;
-    float gravity = -9.8f;
-    public bool grounded;
+    Rigidbody rb;
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        controller = GetComponent<CharacterController>();
+
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        grounded = controller.isGrounded;
+        //ground check
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
-        if (grounded && velocity.y < 0)
+        MyInput();
+        SpeedControl();
+
+        //handle drag
+        if (grounded)
+            rb.drag = groundDrag;
+        else
+            rb.drag = 0;
+    }
+
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
+
+    private void MyInput()
+    { 
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+    }
+
+    private void MovePlayer() { 
+        //calculate movement direction
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+    }
+
+    private void SpeedControl()
+    {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        //limit velocity if needed
+        if (flatVel.magnitude > moveSpeed)
         {
-            velocity.y = 0;
-
+            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
-
-        //Move on plane
-        float horizontalMove = Input.GetAxisRaw("Horizontal");
-        float verticalMove = Input.GetAxisRaw("Vertical");
-
-        moveDirection = new Vector3(horizontalMove, 0, verticalMove).normalized;
-
-        controller.Move(moveDirection * speed * Time.deltaTime);
-
-        //Jump
-        if (grounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            velocity.y += Mathf.Sqrt(jumpHeight * -2.0f * gravity);
-        }
-
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
     }
 }
