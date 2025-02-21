@@ -971,6 +971,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1099231816547320880, guid: 13341d6e011ed0a41852c841fbaa8ac3,
         type: 3}
+      propertyPath: jumpForce
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1099231816547320880, guid: 13341d6e011ed0a41852c841fbaa8ac3,
+        type: 3}
       propertyPath: moveSpeed
       value: 7
       objectReference: {fileID: 0}
@@ -986,8 +991,18 @@ PrefabInstance:
       objectReference: {fileID: 981530986}
     - target: {fileID: 1099231816547320880, guid: 13341d6e011ed0a41852c841fbaa8ac3,
         type: 3}
+      propertyPath: jumpCooldown
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1099231816547320880, guid: 13341d6e011ed0a41852c841fbaa8ac3,
+        type: 3}
       propertyPath: playerHeight
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1099231816547320880, guid: 13341d6e011ed0a41852c841fbaa8ac3,
+        type: 3}
+      propertyPath: airmultiplier
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 1099231816547320880, guid: 13341d6e011ed0a41852c841fbaa8ac3,
         type: 3}

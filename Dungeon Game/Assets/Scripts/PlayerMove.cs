@@ -11,6 +11,13 @@ public class PlayerMove : MonoBehaviour
     //Ground Check
     public float groundDrag;
 
+    public float jumpForce;
+    public float jumpCooldown;
+    public float airmultiplier;
+    bool readyToJump;
+
+    public KeyCode jumpKey = KeyCode.Space;
+
     public float playerHeight;
     public LayerMask whatIsGround;
     bool grounded;
@@ -29,6 +36,9 @@ public class PlayerMove : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        readyToJump = true;
+
     }
 
     private void Update()
@@ -55,13 +65,26 @@ public class PlayerMove : MonoBehaviour
     { 
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+
+        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        {
+            readyToJump = false;
+            Jump();
+
+            Invoke(nameof(ResetJump) , jumpCooldown);
+        }
     }
 
     private void MovePlayer() { 
         //calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        // on ground
+        if(grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        // in air
+        else if(!grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f *airmultiplier, ForceMode.Force);
     }
 
     private void SpeedControl()
@@ -74,5 +97,18 @@ public class PlayerMove : MonoBehaviour
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
+    }
+
+    private void Jump()
+    {
+        //reset y velocity
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void ResetJump()
+    {
+        readyToJump = true;
     }
 }
