@@ -13,7 +13,7 @@ public class PlayerMove : MonoBehaviour
 
     public float jumpForce;
     public float jumpCooldown;
-    public float airmultiplier;
+    public float airMultiplier;
     bool readyToJump;
 
     public KeyCode jumpKey = KeyCode.Space;
@@ -82,9 +82,10 @@ public class PlayerMove : MonoBehaviour
         // on ground
         if(grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
         // in air
         else if(!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f *airmultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f *airMultiplier, ForceMode.Force);
     }
 
     private void SpeedControl()
