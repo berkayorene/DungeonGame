@@ -12,7 +12,7 @@ public class RaycastShooter : MonoBehaviour
     public ParticleSystem muzzleFlash;
     public ParticleSystem wallHitEffect;
     public ParticleSystem enemyHitEffect;
-    public Transform gunTransform;
+    public Transform muzzlePos;
 
     private void Update()
     {
